@@ -3,15 +3,18 @@ import axios from 'axios';
 
 import List from './List';
 
+import { useFormInput } from '../hooks/forms'
+
 const Todo = props => {
-    const [inputIsValid, setInputIsValid] = useState(false);
+    // const [inputIsValid, setInputIsValid] = useState(false);
     // const [todoName, setTodoName] = useState('');
     // const [submittedTodo, setSubmittedTodo] = useState(null);
     // const [todoList, setTodoList] = useState([]);
-
     // const [todoState, setTodoState] = useState({userInput: '', todoList: []});
 
-    const todoInputRef = useRef();
+
+    // const todoInputRef = useRef();
+    const todoInput = useFormInput();
 
     const todoListReducer = (state, action) => {
         switch(action.type) {
@@ -77,7 +80,7 @@ const Todo = props => {
         //     userInput: todoState.userInput, 
         //     todoList: todoState.todoList.concat(todoState.userInput)})
 
-        const todoName = todoInputRef.current.value;
+        const todoName = todoInput.value;
 
         axios.post('https://react-hooks-1b95b.firebaseio.com/todos.json', {name: todoName})
             .then(res => {
@@ -99,22 +102,22 @@ const Todo = props => {
         .catch(err => console.log(err))
     }
 
-    const inputValidationHandler = event => {
-        if(event.target.value.trim() === '') {
-            setInputIsValid(false)
-        } else {
-            setInputIsValid(true)
-        }
-    };
+    // const inputValidationHandler = event => {
+    //     if(event.target.value.trim() === '') {
+    //         setInputIsValid(false)
+    //     } else {
+    //         setInputIsValid(true)
+    //     }
+    // };
 
     return (
         <React.Fragment>
             <input 
                 type="text" 
                 placeholder="Todo" 
-                ref={todoInputRef} 
-                onChange={inputValidationHandler}
-                style={{backgroundColor: inputIsValid ? 'transparent' : 'red'}}
+                onChange={todoInput.onChange}
+                value={todoInput.value}
+                style={{backgroundColor: todoInput.validity ? 'transparent' : 'red'}}
                 />
                 {/* // onChange={inputChangeHandler} 
                 // value={todoName}  */}
@@ -123,7 +126,7 @@ const Todo = props => {
                 () => (
                     <List items={todoList} onClick={todoRemoveHandler} />
                 ), [todoList]
-            )};
+            )}
         </React.Fragment>
     )
     
